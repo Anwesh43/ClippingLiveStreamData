@@ -1,0 +1,60 @@
+<html>
+<script>
+var obj,ctx,vid;
+var x=0,y=0;
+window.onload=function()
+{
+obj=document.getElementById("tik");
+ctx=obj.getContext("2d");
+vid=document.getElementById("vid");
+navigator.webkitGetUserMedia({audio:false,video:true},success,error);
+pop();
+};
+function success(stream)
+{
+vid.src=window.URL.createObjectURL(stream);
+}
+function error(err)
+{
+alert(err);
+}
+window.onmousedown=function(event)
+{
+sessionStorage.x=x;
+sessionStorage.y=y;
+sessionStorage.im=obj.toDataURL();
+window.location="PutVC.html";
+};
+window.onmousemove=function(event)
+{
+x=event.pageX;
+y=event.pageY;
+};
+function pop()
+{
+ctx.clearRect(0,0,600,600);
+
+ctx.drawImage(vid,0,0,600,600);
+ctx.globalAlpha=1;
+ctx.save();
+ctx.translate(x,y);
+ctx.beginPath();
+for(var i=0;i<4;i++)
+{
+ctx.save();
+ctx.rotate(i*Math.PI/2);
+ctx.rect(-10,-20,20,20);
+ctx.restore();
+}
+ctx.stroke();
+ctx.clip();
+ctx.drawImage(vid,-x,-y,600,600);
+ctx.restore();
+setTimeout("pop()",100);
+}
+</script>
+<canvas id='tik' width='600px' height='600px'>
+</canvas>
+<video id='vid' autoplay width='300px' height='300px' style="visibility:hidden">
+</video>
+</html>

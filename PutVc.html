@@ -1,0 +1,61 @@
+<html>
+<script src="jquery-1.8.3.js">
+</script>
+<script>
+var obj,ctx;
+var x=new Array(1000),y=new Array(1000),t=new Array(1000),k=new Array(1000);
+var j=0;
+var r=new Image();
+var x1,y1;
+window.onload=function()
+{
+obj=document.getElementById("tik");
+ctx=obj.getContext("2d");
+x1=sessionStorage.x;
+y1=sessionStorage.y;
+r.src=sessionStorage.im;
+pop();
+};
+window.onkeydown=function(event)
+{
+if(event.keyCode==32)
+$.ajax({type:"POST",url:"Savd.php",data:{"a":obj.toDataURL()}});
+};
+window.onmousedown=function(event)
+{
+x[j]=event.pageX;
+y[j]=event.pageY;
+t[j]=0;
+k[j]=10;
+j++;
+};
+function pop()
+{
+
+ctx.clearRect(0,0,1000,600);
+
+for(var i=0;i<j;i++)
+{
+ctx.save();
+ctx.translate(x[i],y[i]);
+ctx.rotate(t[i]*Math.PI/180);
+ctx.beginPath();
+for(var s=0;s<4;s++)
+{
+ctx.save();
+ctx.rotate(s*Math.PI/2);
+ctx.rect(-10,-20,20,20);
+ctx.restore();
+}
+ctx.clip();
+ctx.drawImage(r,-x1,-y1,600,600);
+ctx.restore();
+t[i]+=k[i];
+}
+
+setTimeout("pop()",100);
+}
+</script>
+<canvas id='tik' width='1000px' height='600px'>
+</canvas>
+</html>
